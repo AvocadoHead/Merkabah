@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עץ הקבלה - ויזואליזציה וצלילים</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for a mystical font -->
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+    <!-- Three.js Core -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <!-- OrbitControls for camera control -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Tween.js for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+</head>
+<body>
+    <!-- Canvas for 3D scene -->
+    <div id="container"></div>
+    
+    <!-- Mute button -->
+    <button id="muteButton">השתק</button>
+    
+    <!-- Letter combination generator -->
+    <div id="letterGenerator">
+        <input type="text" id="requestInput" placeholder="הקש בקשה (למשל, בריאות, שפע)">
+        <button id="generateButton">צור צירוף</button>
+        <p id="combinationOutput"></p>
+    </div>
+    
+    <!-- 2D Merkaba container -->
+    <div id="merkaba2D">
+        <div id="merkabaOverlay"></div>
+    </div>
+    
+    <!-- Display for Sephira info -->
+    <div id="sephiraInfo">
+        <div id="sephiraName"></div>
+        <div id="sephiraDescription"></div>
+    </div>
+    
+    <!-- Custom script -->
+    <script src="script.js"></script>
+</body>
+</html>
