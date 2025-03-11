@@ -5,7 +5,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('container').appendChild(renderer.domElement);
 
-// Camera controls
+// Camera controls (mobile-friendly)
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
@@ -15,12 +15,12 @@ camera.position.z = 10;
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-// Sephirot data with updated colors for Chokhmah and Chesed
+// Sephirot data with updated colors
 const sephirotData = [
     { name: "כתר", position: [0, 5, 0], color: 0xffffff, frequency: 800, description: "כתר היא הספירה העליונה, מייצגת את הרצון האלוהי." },
-    { name: "חכמה", position: [2, 4, 0], color: 0x808080, frequency: 700, description: "חכמה היא התחלת היצירה, המחשבה הראשונית." }, // Gray
+    { name: "חכמה", position: [2, 4, 0], color: 0x808080, frequency: 700, description: "חכמה היא התחלת היצירה, המחשבה הראשונית." },
     { name: "בינה", position: [-2, 4, 0], color: 0x333333, frequency: 600, description: "בינה היא ההבנה וההתבוננות." },
-    { name: "חסד", position: [3, 2, 0], color: 0x0047AB, frequency: 500, description: "חסד מייצגת את החסד והאהבה ללא גבולות." }, // Deep cobalt blue
+    { name: "חסד", position: [3, 2, 0], color: 0x0047AB, frequency: 500, description: "חסד מייצגת את החסד והאהבה ללא גבולות." },
     { name: "גבורה", position: [-3, 2, 0], color: 0xff0000, frequency: 400, description: "גבורה היא כוח השיפוט והגבורה." },
     { name: "תפארת", position: [0, 1, 0], color: 0xffd700, frequency: 350, description: "תפארת היא היופי והאיזון." },
     { name: "נצח", position: [2, -1, 0], color: 0x00ff00, frequency: 300, description: "נצח מייצגת את הניצחון וההתמדה." },
@@ -50,7 +50,7 @@ sephirotData.forEach(data => {
     scene.add(light);
 });
 
-// Paths between Sephirot (22 paths)
+// Paths between Sephirot
 const paths = [
     { start: 0, end: 1 }, { start: 0, end: 2 }, { start: 0, end: 5 },
     { start: 1, end: 3 }, { start: 1, end: 5 }, { start: 2, end: 4 }, { start: 2, end: 5 },
@@ -82,7 +82,7 @@ paths.forEach(path => {
     }
 });
 
-// Audio setup with fade-in and fade-out
+// Audio setup
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let currentOscillator = null;
 let gainNode = null;
@@ -122,7 +122,7 @@ document.getElementById('muteButton').addEventListener('click', () => {
     }
 });
 
-// 2D Merkaba interaction
+// 2D Merkaba interaction for both mouse and touch
 const merkaba2D = document.getElementById('merkaba2D');
 merkaba2D.addEventListener('mouseover', () => {
     document.getElementById('merkabaOverlay').style.display = 'block';
@@ -130,20 +130,31 @@ merkaba2D.addEventListener('mouseover', () => {
 merkaba2D.addEventListener('mouseout', () => {
     document.getElementById('merkabaOverlay').style.display = 'none';
 });
+merkaba2D.addEventListener('touchstart', () => {
+    document.getElementById('merkabaOverlay').style.display = 'block';
+});
+merkaba2D.addEventListener('touchend', () => {
+    document.getElementById('merkabaOverlay').style.display = 'none';
+});
 
-// Interaction with Sephirot
+// Interaction with Sephirot for both mouse and touch
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-function onMouseClick(event) {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+function onClickOrTouchStart(event) {
+    event.preventDefault();
+    const coords = event.type === 'touchstart' ? event.touches[0] : event;
+    mouse.x = (coords.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(coords.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(sephirotMeshes);
     if (intersects.length > 0) {
         const selectedSephira = intersects[0].object;
-        playSound(selectedSephira.userData.frequency);
-        
+        playSound(selectedSephira.userData.frequency); // Play sound
+        document.getElementById('sephiraInfo').style.display = 'block';
+        document.getElementById('sephiraName').textContent = selectedSephira.userData.name;
+        document.getElementById('sephiraDescription').textContent = selectedSephira.userData.description;
+
         const currentColor = new THREE.Color(ambientLight.color);
         const targetColor = new THREE.Color(selectedSephira.material.color);
         new TWEEN.Tween(currentColor)
@@ -160,20 +171,36 @@ function onMouseMove(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
-    
-    const intersectsSephirot = raycaster.intersectObjects(sephirotMeshes);
-    if (intersectsSephirot.length > 0) {
-        const sephira = intersectsSephirot[0].object.userData;
+    const intersects = raycaster.intersectObjects(sephirotMeshes);
+    if (intersects.length > 0) {
+        const sephira = intersects[0].object.userData;
+        document.getElementById('sephiraInfo').style.display = 'block';
         document.getElementById('sephiraName').textContent = sephira.name;
         document.getElementById('sephiraDescription').textContent = sephira.description;
     } else {
-        document.getElementById('sephiraName').textContent = '';
-        document.getElementById('sephiraDescription').textContent = '';
+        document.getElementById('sephiraInfo').style.display = 'none';
     }
 }
 
-window.addEventListener('click', onMouseClick);
-window.addEventListener('mousemove', onMouseMove);
+function onTouchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+}
+
+function onMouseOutOrTouchEnd(event) {
+    document.getElementById('sephiraInfo').style.display = 'none';
+}
+
+// Add event listeners for both mouse and touch
+window.addEventListener('click', onClickOrTouchStart, false);
+window.addEventListener('touchstart', onClickOrTouchStart, false);
+window.addEventListener('mousemove', onMouseMove, false);
+window.addEventListener('touchmove', onTouchMove, false);
+window.addEventListener('mouseout', onMouseOutOrTouchEnd, false);
+window.addEventListener('touchend', onMouseOutOrTouchEnd, false);
 
 // Letter combinations
 const combinations = [
