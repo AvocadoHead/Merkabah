@@ -38,19 +38,34 @@ body {
 }
 
 /* פאנל: מרכבה + מחולל צירופים */
+/* הסרנו רקע, מסגרת וצל, כך שאין "ריבוע" */
 #kabbalahPanel {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: none;
+  border: none;
+  box-shadow: none;
   padding: 0;
-  border-radius: 15px;
-  border: 2px solid #666;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   width: 280px;
   max-width: 90%;
   z-index: 5;
   text-align: center;
+}
+
+/* התאמה לנייד - מעביר את הפאנל לתחתית המסך */
+@media (max-width: 600px) {
+  #kabbalahPanel {
+    bottom: 10px;
+    top: auto;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    max-height: 40vh; /* מגביל גובה */
+    overflow-y: auto; /* גלילה אם התוכן ארוך */
+  }
 }
 
 /* מיכל המרכבה – 200x200, אבל בפועל נרחיב את האובייקט בסצנה עצמה */
@@ -67,7 +82,7 @@ body {
   background: transparent;
 }
 
-/* תמונת האדם – קטנה יותר */
+/* דמות האדם - כעת scale(1.6) (פי 2 מהקודם שהיה 0.8) */
 #personImage {
   width: 80px; 
   height: 80px; 
@@ -78,7 +93,7 @@ body {
   left: 60px; 
   opacity: 0;
   transition: opacity 0.3s;
-  transform: scale(0.8);
+  transform: scale(1.6); /* במקום 0.8 */
   transform-origin: center center;
 }
 #merkaba3DContainer:hover #personImage,
@@ -183,7 +198,7 @@ body {
   }
 }
 
-/* פוטר - בדיוק לפי הבקשה */
+/* פוטר - בדיוק כפי שביקשת */
 .footer {
   position: absolute;
   bottom: 10px;
