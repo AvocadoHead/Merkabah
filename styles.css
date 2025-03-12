@@ -67,14 +67,14 @@ body::before {
 #merkaba3DContainer {
     position: relative;
     margin-bottom: 15px;
-    width: 150px; /* הגדל ל-150px */
-    height: 150px; /* הגדל ל-150px */
+    width: 150px;
+    height: 150px;
     margin: 10px auto;
     cursor: pointer;
-    border: none; /* הסר את המסגרת הלבנה */
+    border: none;
     border-radius: 12px;
     overflow: hidden;
-    background: transparent; /* ודא שהרקע שקוף */
+    background: transparent;
 }
 
 #merkabaCanvas {
@@ -230,7 +230,7 @@ body::before {
     text-decoration: none;
     font-size: 16px;
     transition: color 0.3s;
-    cursor: pointer; /* הצבעה שזה ניתן ללחיצה */
+    cursor: pointer;
 }
 
 .social-icons a:hover {
@@ -248,7 +248,7 @@ body::before {
     text-decoration: none;
     font-size: 12px;
     transition: color 0.3s;
-    cursor: pointer; /* הצבעה שזה ניתן ללחיצה */
+    cursor: pointer;
 }
 
 .contact-info a:hover {
