@@ -1,23 +1,30 @@
 // -----------------------------------------
-//  Main Scene (Tree of Life)
+//  הגדרות סצנה ראשית של עץ הספירות
 // -----------------------------------------
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75, 
+  window.innerWidth / window.innerHeight, 
+  0.1, 
+  1000
+);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('container').appendChild(renderer.domElement);
 
-// Orbit Controls
+// בקרת מצלמה
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 camera.position.z = 15;
 
-// Ambient Light
+// תאורה כללית
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 
-// Sephirot Data
+// -----------------------------------------
+//  נתוני הספירות (מקוצר)
+// -----------------------------------------
 const sephirotData = [
   { 
     name: "כתר",
@@ -51,7 +58,7 @@ const sephirotData = [
   },
   {
     name: "חסד",
-    position: [3, 2, 0.5],
+    position: [4, 2, 0.5],
     color: 0x00CED1,
     frequency: 500,
     nameOfGod: "אל",
@@ -61,7 +68,7 @@ const sephirotData = [
   },
   {
     name: "גבורה",
-    position: [-3, 2, 0.5],
+    position: [-4, 2, 0.5],
     color: 0xFF4500,
     frequency: 400,
     nameOfGod: "אלוהים",
@@ -71,7 +78,7 @@ const sephirotData = [
   },
   {
     name: "תפארת",
-    position: [0, 0, -1.5],
+    position: [0, 0, 0],
     color: 0xFFFF00,
     frequency: 350,
     nameOfGod: "יהוה",
@@ -121,7 +128,7 @@ const sephirotData = [
   }
 ];
 
-// Create glowing spheres for Sephirot
+// יצירת ספירות זוהרות
 let sephirotMeshes = [];
 function initializeSephirot() {
   sephirotMeshes = sephirotData.map(data => {
@@ -139,7 +146,7 @@ function initializeSephirot() {
     mesh.userData = { ...data };
     scene.add(mesh);
 
-    // small point light at each sephira
+    // הוספת נקודת אור קטנה בכל ספירה
     const light = new THREE.PointLight(data.color, 1, 10);
     light.position.set(...data.position);
     scene.add(light);
@@ -150,15 +157,16 @@ function initializeSephirot() {
 initializeSephirot();
 
 // -----------------------------------------
-//  Lines and moving dots between Sephirot
+//  חיבורי קווים בין הספירות
 // -----------------------------------------
 const paths = [];
 for (let i = 0; i < sephirotData.length; i++) {
   for (let j = i + 1; j < sephirotData.length; j++) {
-      paths.push({ start: i, end: j });
+    paths.push({ start: i, end: j });
   }
 }
 
+// יצירת קווים ונקודות נעות
 const pathDots = [];
 paths.forEach(path => {
   const startPos = new THREE.Vector3(...sephirotData[path.start].position);
@@ -175,23 +183,22 @@ paths.forEach(path => {
   const line = new THREE.Line(lineGeometry, lineMaterial);
   scene.add(line);
   
-  // create 3 moving dots on each line
   for (let i = 0; i < 3; i++) {
-      const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-      const dotMaterial = new THREE.MeshBasicMaterial({
-          color: 0xcccccc, 
-          transparent: true, 
-          opacity: 0.9
-      });
-      const dot = new THREE.Mesh(dotGeometry, dotMaterial);
-      scene.add(dot);
-      const direction = i % 2 === 0 ? 1 : -1;
-      pathDots.push({ dot, startPos, endPos, direction, offset: Math.random() });
+    const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+    const dotMaterial = new THREE.MeshBasicMaterial({
+      color: 0xcccccc, 
+      transparent: true, 
+      opacity: 0.9
+    });
+    const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+    scene.add(dot);
+    const direction = i % 2 === 0 ? 1 : -1;
+    pathDots.push({ dot, startPos, endPos, direction, offset: Math.random() });
   }
 });
 
 // -----------------------------------------
-//  Separate scene for the Merkaba
+//  סצנה למרכבה
 // -----------------------------------------
 const merkabaScene = new THREE.Scene();
 const merkabaCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
@@ -216,7 +223,6 @@ const wireframeMaterial = new THREE.MeshBasicMaterial({
   opacity: 0.8
 });
 
-// Two tetrahedrons => Merkaba
 const tetra1Geometry = new THREE.TetrahedronGeometry(0.8, 0);
 const tetra2Geometry = new THREE.TetrahedronGeometry(0.8, 0);
 
@@ -231,11 +237,11 @@ merkabaGroup.add(tetra1Wireframe);
 merkabaGroup.add(tetra2);
 merkabaGroup.add(tetra2Wireframe);
 
-// Initial rotation
+// סיבוב ראשוני
 tetra1.rotation.x = -Math.PI / 2;
 tetra2.rotation.x = Math.PI / 2;
 
-// Scale up Merkaba
+// הגדלת המרכבה (פי 1.5)
 merkabaGroup.scale.set(1.5, 1.5, 1.5);
 
 merkabaScene.add(merkabaGroup);
@@ -245,7 +251,7 @@ const merkabaLight = new THREE.AmbientLight(0xffffff, 0.8);
 merkabaScene.add(merkabaLight);
 
 // -----------------------------------------
-//  Audio config: longer fade in/out
+//  הגדרות אודיו
 // -----------------------------------------
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let currentOscillator = null;
@@ -314,7 +320,7 @@ function playSound(frequency) {
   }
 }
 
-// Mute/unmute button
+// כפתור השתק/ביטול השתקה
 document.getElementById('muteButton').addEventListener('click', () => {
   isMuted = !isMuted;
   document.getElementById('muteButton').textContent = isMuted ? 'בטל השתקה' : 'השתק';
@@ -331,7 +337,7 @@ document.getElementById('muteButton').addEventListener('click', () => {
 });
 
 // -----------------------------------------
-//  Interaction with Merkaba (hover => show person image)
+//  אינטראקציה עם המרכבה (תמונה גדולה יותר)
 // -----------------------------------------
 const merkaba3DContainer = document.getElementById('merkaba3DContainer');
 let isTouchActive = false;
@@ -356,7 +362,7 @@ merkaba3DContainer.addEventListener('touchend', () => {
 });
 
 // -----------------------------------------
-//  Interaction with Sephirot
+//  אינטראקציה עם הספירות
 // -----------------------------------------
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -422,7 +428,7 @@ function onClickOrTouchStart(event) {
     const selectedSephira = intersects[0].object;
     playSound(selectedSephira.userData.frequency);
 
-    // Tween ambient light color
+    // שינוי צבע התאורה לרגע על פי צבע הספירה
     const currentColor = new THREE.Color(ambientLight.color);
     new TWEEN.Tween(currentColor)
       .to(new THREE.Color(selectedSephira.material.color), 1000)
@@ -448,25 +454,25 @@ window.addEventListener('mouseout', onMouseOutOrTouchEnd, false);
 window.addEventListener('touchend', onMouseOutOrTouchEnd, false);
 
 // -----------------------------------------
-//  Footer links (sound on click/touch)
+//  אינטראקציה עם קישורי הפוטר (צליל קליק)
 // -----------------------------------------
 document.querySelectorAll('.footer a').forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
     const href = link.getAttribute('href');
     if (href) window.open(href, link.target || '_blank');
-    playSound(400); // short click sound
+    playSound(400); // צליל קליק
   });
   link.addEventListener('touchstart', (e) => {
     e.preventDefault();
     const href = link.getAttribute('href');
     if (href) window.open(href, link.target || '_blank');
-    playSound(400); // short click sound
+    playSound(400); // צליל קליק
   });
 });
 
 // -----------------------------------------
-//  Local letter combinations (no external server)
+//  צירופים של אותיות (ללא שרת חיצוני)
 // -----------------------------------------
 const combinations = [
   { combination: "אלד", meaning: "ברכה כללית, אנרגיה חיובית..." },
@@ -486,8 +492,7 @@ const combinations = [
 
 document.getElementById('generateButton').addEventListener('click', () => {
   const request = document.getElementById('requestInput').value.trim();
-  
-  // For now, we ignore 'request' and pick random
+
   if (!combinations || combinations.length === 0) {
     document.getElementById('combinationOutput').innerHTML = `
       <span class="combination">אלד</span> 
@@ -504,20 +509,20 @@ document.getElementById('generateButton').addEventListener('click', () => {
 });
 
 // -----------------------------------------
-//  Animation loop
+//  לולאת אנימציה
 // -----------------------------------------
 function animate() {
   requestAnimationFrame(animate);
   TWEEN.update();
   controls.update();
   
-  // Rotate Merkaba
+  // סיבוב המרכבה
   tetra1.rotation.y += 0.02;
   tetra2.rotation.y -= 0.02;
   tetra1Wireframe.rotation.y += 0.02;
   tetra2Wireframe.rotation.y -= 0.02;
   
-  // Move dots on lines
+  // הנעת הנקודות על הקווים
   pathDots.forEach(({ dot, startPos, endPos, direction, offset }) => {
     const time = (Date.now() % 4000) / 4000;
     const progress = (time + offset) % 1;
