@@ -1,125 +1,135 @@
-// Scene setup for main container
+// -----------------------------------------
+//  הגדרות סצנה ראשית של עץ הספירות
+// -----------------------------------------
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+    75, 
+    window.innerWidth / window.innerHeight, 
+    0.1, 
+    1000
+);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('container').appendChild(renderer.domElement);
 
-// Camera controls
+// בקרת מצלמה
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 camera.position.z = 15;
 
-// Ambient light
+// תאורה כללית
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 
-// Sephirot data with updated colors and additional info based on the image
+// -----------------------------------------
+//  נתוני הספירות (ללא קלפי טארוט)
+// -----------------------------------------
+// נוסיף 'nameOfGod' עבור שם ה' בכל ספירה, ונשאיר מלאך וסמלים
 const sephirotData = [
     { 
-        name: "כתר", 
-        position: [0, 6, 2], 
-        color: 0xFFFFFF, // לבן, מתאים לתמונה
-        frequency: 800, 
-        description: "כתר - הרצון האלוהי המוחלט. מלאך: מטטרון. סמלים: שלושה גלגלים, אפס הטארוט (הנשמה הטיפשית). קשר לטארוט: אפס - הנשמה הטיפשית.",
+        name: "כתר",
+        position: [0, 6, 2],
+        color: 0xFFFFFF,
+        frequency: 800,
+        nameOfGod: "אהיה", // שם האלוהות
         angel: "מטטרון",
         symbols: "שלושה גלגלים",
-        tarot: "אפס - הנשמה הטיפשית"
+        description: "כתר - הרצון האלוהי המוחלט. השורש העליון של כל המציאות."
     },
     { 
-        name: "חכמה", 
-        position: [2, 4, 1.5], 
-        color: 0xADD8E6, // כחול בהיר, מתאים לתמונה
-        frequency: 700, 
-        description: "חכמה - נקודת ההשראה הראשונית. מלאך: רזיאל. סמלים: כסא, עשרים וארבעה זקני הכסא. קשר לטארוט: אחת - הקוסם.",
+        name: "חכמה",
+        position: [2, 4, 1.5],
+        color: 0xADD8E6,
+        frequency: 700,
+        nameOfGod: "יה",
         angel: "רזיאל",
-        symbols: "כסא, עשרים וארבעה זקני הכסא",
-        tarot: "אחת - הקוסם"
+        symbols: "כסא, מעיין החוכמה",
+        description: "חכמה - נקודת ההשראה הראשונית, התגלות האור האלוהי הראשוני."
     },
     { 
-        name: "בינה", 
-        position: [-2, 4, 1.5], 
-        color: 0x800080, // סגול, מתאים לתמונה
-        frequency: 600, 
-        description: "בינה - הבנה עמוקה. מלאך: צפקיאל. סמלים: כד, שלושה גלגלים. קשר לטארוט: שתיים - הכוהנת.",
+        name: "בינה",
+        position: [-2, 4, 1.5],
+        color: 0x800080,
+        frequency: 600,
+        nameOfGod: "יהוה אלוהים",
         angel: "צפקיאל",
-        symbols: "כד, שלושה גלגלים",
-        tarot: "שתיים - הכוהנת"
+        symbols: "כד, תבונה עמוקה",
+        description: "בינה - הבנה עמוקה, עיבוד החוכמה והפיכתה לתובנה."
     },
     { 
-        name: "חסד", 
-        position: [4, 2, 1], 
-        color: 0x00CED1, // טורקיז, מתאים לתמונה
-        frequency: 500, 
-        description: "חסד - אהבה וחמלה. מלאך: צדקיאל. סמלים: כתר, אריה. קשר לטארוט: שלוש - הקיסרית.",
+        name: "חסד",
+        position: [4, 2, 1],
+        color: 0x00CED1,
+        frequency: 500,
+        nameOfGod: "אל",
         angel: "צדקיאל",
-        symbols: "כתר, אריה",
-        tarot: "שלוש - הקיסרית"
+        symbols: "אהבה וחמלה",
+        description: "חסד - מידת החסד, נתינה ואהבה בלתי מוגבלת."
     },
     { 
-        name: "גבורה", 
-        position: [-4, 2, 1], 
-        color: 0xFF4500, // כתום-אדום, מתאים לתמונה
-        frequency: 400, 
-        description: "גבורה - כוח ושיפוט. מלאך: כמאל. סמלים: חרב, מגדל. קשר לטארוט: ארבע - הקיסר.",
+        name: "גבורה",
+        position: [-4, 2, 1],
+        color: 0xFF4500,
+        frequency: 400,
+        nameOfGod: "אלוהים גיבור",
         angel: "כמאל",
-        symbols: "חרב, מגדל",
-        tarot: "ארבע - הקיסר"
+        symbols: "חרב הדין",
+        description: "גבורה - כוח, גבולות ושיפוט, מציב גבולות כדי לאזן את החסד."
     },
     { 
-        name: "תפארת", 
-        position: [0, 0, 0], 
-        color: 0xFFFF00, // צהוב, מתאים לתמונה
-        frequency: 350, 
-        description: "תפארת - הרמוניה ויופי. מלאך: מיכאל. סמלים: שמש, לב. קשר לטארוט: חמש - הכוהן הגדול.",
+        name: "תפארת",
+        position: [0, 0, 0],
+        color: 0xFFFF00,
+        frequency: 350,
+        nameOfGod: "יהוה",
         angel: "מיכאל",
-        symbols: "שמש, לב",
-        tarot: "חמש - הכוהן הגדול"
+        symbols: "איזון, שמש, לב",
+        description: "תפארת - איזון ויופי, החיבור בין חסד לגבורה."
     },
     { 
-        name: "נצח", 
-        position: [3, -2, -1], 
-        color: 0x9ACD32, // ירוק בהיר, מתאים לתמונה
-        frequency: 300, 
-        description: "נצח - נצחיות וניצחון. מלאך: חניאל. סמלים: נר, נחש. קשר לטארוט: שש - האוהבים.",
+        name: "נצח",
+        position: [3, -2, -1],
+        color: 0x9ACD32,
+        frequency: 300,
+        nameOfGod: "יהוה צבאות",
         angel: "חניאל",
-        symbols: "נר, נחש",
-        tarot: "שש - האוהבים"
+        symbols: "ניצחון, התמדה",
+        description: "נצח - נצחיות וניצחון, הכוח להמשיך ולהתקדם."
     },
     { 
-        name: "הוד", 
-        position: [-3, -2, -1], 
-        color: 0xFF69B4, // ורוד, מתאים לתמונה
-        frequency: 250, 
-        description: "הוד - תהילה והודיה. מלאך: רפאל. סמלים: נר, שפה. קשר לטארוט: שבע - המרכבה.",
+        name: "הוד",
+        position: [-3, -2, -1],
+        color: 0xFF69B4,
+        frequency: 250,
+        nameOfGod: "אלוהים צבאות",
         angel: "רפאל",
-        symbols: "נר, שפה",
-        tarot: "שבע - המרכבה"
+        symbols: "תהילה והודיה",
+        description: "הוד - הוד והדר, ענוה והכרה בגדולת האל."
     },
     { 
-        name: "יסוד", 
-        position: [0, -4, -2], 
-        color: 0xFFA500, // כתום, מתאים לתמונה
-        frequency: 200, 
-        description: "יסוד - גשר בין הרוחני לגשמי. מלאך: סנדלפון. סמלים: איבר מין, שרשרת. קשר לטארוט: תשע - החסד.",
+        name: "יסוד",
+        position: [0, -4, -2],
+        color: 0xFFA500,
+        frequency: 200,
+        nameOfGod: "שדי אל חי",
         angel: "סנדלפון",
-        symbols: "איבר מין, שרשרת",
-        tarot: "תשע - החסד"
+        symbols: "גשר בין הרוחני לגשמי",
+        description: "יסוד - היסוד המקשר בין הספירות העליונות לעולם החומרי."
     },
     { 
-        name: "מלכות", 
-        position: [0, -6, -4], 
-        color: 0xFFD700, // זהב, מתאים לתמונה
-        frequency: 150, 
-        description: "מלכות - השתקפות האלוהית בעולם. מלאך: גבריאל. סמלים: כדור הארץ, כתר. קשר לטארוט: עשר - גלגל המזל.",
+        name: "מלכות",
+        position: [0, -6, -4],
+        color: 0xFFD700,
+        frequency: 150,
+        nameOfGod: "אדני הארץ",
         angel: "גבריאל",
-        symbols: "כדור הארץ, כתר",
-        tarot: "עשר - גלגל המזל"
+        symbols: "כדור הארץ, מלכות בשפלות",
+        description: "מלכות - ביטוי האלוהות במציאות הגשמית, המקום שבו הכול מתגשם."
     }
 ];
 
-// Create glowing Sephirot
+// יצירת ספירות זוהרות
 let sephirotMeshes = [];
 function initializeSephirot() {
     sephirotMeshes = sephirotData.map(data => {
@@ -134,17 +144,23 @@ function initializeSephirot() {
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(...data.position);
-        mesh.userData = { ...data }; // כולל את כל המידע (name, frequency, description, angel, symbols, tarot)
+        mesh.userData = { ...data };
         scene.add(mesh);
+
+        // הוספת נקודת אור קטנה בכל ספירה
         const light = new THREE.PointLight(data.color, 1, 10);
         light.position.set(...data.position);
         scene.add(light);
+
         return mesh;
     });
 }
 initializeSephirot();
 
-// Paths between all Sephirot
+// -----------------------------------------
+//  חיבורי קווים בין הספירות (רשת כללית)
+//  כאן אפשר לשנות לפי רצונך איזה ספירות יתחברו לאיזה
+// -----------------------------------------
 const paths = [];
 for (let i = 0; i < sephirotData.length; i++) {
     for (let j = i + 1; j < sephirotData.length; j++) {
@@ -152,21 +168,31 @@ for (let i = 0; i < sephirotData.length; i++) {
     }
 }
 
-// Create paths and moving dots
+// יצירת הקווים והנקודות הנעות עליהם
 const pathDots = [];
 paths.forEach(path => {
     const startPos = new THREE.Vector3(...sephirotData[path.start].position);
     const endPos = new THREE.Vector3(...sephirotData[path.end].position);
     const points = [startPos, endPos];
     
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x666666, linewidth: 1, transparent: true, opacity: 0.8 });
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x666666, 
+        linewidth: 1, 
+        transparent: true, 
+        opacity: 0.8
+    });
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
     const line = new THREE.Line(lineGeometry, lineMaterial);
     scene.add(line);
     
+    // יצירת 3 נקודות נעות לכל קו
     for (let i = 0; i < 3; i++) {
         const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-        const dotMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.9 });
+        const dotMaterial = new THREE.MeshBasicMaterial({
+            color: 0xcccccc, 
+            transparent: true, 
+            opacity: 0.9
+        });
         const dot = new THREE.Mesh(dotGeometry, dotMaterial);
         scene.add(dot);
         const direction = i % 2 === 0 ? 1 : -1;
@@ -174,7 +200,9 @@ paths.forEach(path => {
     }
 });
 
-// Setup Merkaba scene
+// -----------------------------------------
+//  סצנה למרכבה (Merkaba) בתצוגה מוקטנת
+// -----------------------------------------
 const merkabaScene = new THREE.Scene();
 const merkabaCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 const merkabaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -182,7 +210,7 @@ merkabaRenderer.setSize(150, 150);
 merkabaRenderer.setClearColor(0x000000, 0);
 document.getElementById('merkaba3DContainer').appendChild(merkabaRenderer.domElement);
 
-// Add 3D Merkaba with two tetrahedrons
+// חומר למרכבה
 const merkabaMaterial = new THREE.MeshPhongMaterial({
     color: 0xffd700,
     emissive: 0xffd700,
@@ -200,6 +228,7 @@ const wireframeMaterial = new THREE.MeshBasicMaterial({
     opacity: 0.8
 });
 
+// שני טטראהדרונים יוצרים מרכבה
 const tetra1Geometry = new THREE.TetrahedronGeometry(0.8, 0);
 const tetra2Geometry = new THREE.TetrahedronGeometry(0.8, 0);
 
@@ -223,7 +252,9 @@ merkabaCamera.position.z = 2.5;
 const merkabaLight = new THREE.AmbientLight(0xffffff, 0.8);
 merkabaScene.add(merkabaLight);
 
-// Audio setup
+// -----------------------------------------
+//  הגדרות אודיו
+// -----------------------------------------
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let currentOscillator = null;
 let gainNode = null;
@@ -231,19 +262,17 @@ let isMuted = false;
 let audioInitialized = false;
 
 function initializeAudio() {
+    // ניסיון לדרוש אינטראקציה מהמשתמש כדי להפעיל אודיו (במיוחד בסלולר)
     if (audioContext.state === 'suspended') {
         audioContext.resume().then(() => {
             audioInitialized = true;
-            console.log('Audio initialized and resumed');
             playTestSound();
         }).catch(error => {
             console.error('Failed to resume audio context:', error);
-            // נסה שוב לאחר 1 שנייה
             setTimeout(initializeAudio, 1000);
         });
     } else {
         audioInitialized = true;
-        console.log('Audio initialized');
         playTestSound();
     }
 }
@@ -256,48 +285,67 @@ function playTestSound() {
 
 function playSound(frequency) {
     if (isMuted || !audioInitialized) {
-        console.log('Sound not played: Muted or audio not initialized');
         return;
     }
     try {
+        // עצירת צליל קודם אם קיים
         if (currentOscillator) {
             currentOscillator.stop();
             currentOscillator = null;
         }
         currentOscillator = audioContext.createOscillator();
         gainNode = audioContext.createGain();
+
         currentOscillator.type = 'sine';
         currentOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
         currentOscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
+
+        // fade in
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(1.0, audioContext.currentTime + 0.1); // עוצמה מלאה
+        gainNode.gain.linearRampToValueAtTime(1.0, audioContext.currentTime + 0.1);
+
         currentOscillator.start();
+
+        // השמעה קצרה של חצי שנייה + fade out
         setTimeout(() => {
-            if (gainNode) gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
-            setTimeout(() => { if (currentOscillator) currentOscillator.stop(); currentOscillator = null; }, 600);
+            if (gainNode) {
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+            }
+            setTimeout(() => {
+                if (currentOscillator) {
+                    currentOscillator.stop();
+                    currentOscillator = null;
+                }
+            }, 600);
         }, 500);
-        console.log(`Playing sound at frequency ${frequency} Hz`);
+
     } catch (error) {
         console.error('Error playing sound:', error);
     }
 }
 
+// כפתור השתק/ביטול השתקה
 document.getElementById('muteButton').addEventListener('click', () => {
     isMuted = !isMuted;
     document.getElementById('muteButton').textContent = isMuted ? 'בטל השתקה' : 'השתק';
+
+    // אם מבטלים השתקה ועדיין לא אותחל האודיו, נאתחל
     if (!isMuted && !audioInitialized) {
         initializeAudio();
     } else if (!isMuted && audioInitialized) {
         playTestSound();
     }
+    // עצירת הצליל אם משתיקים
     if (isMuted && currentOscillator) {
         currentOscillator.stop();
         currentOscillator = null;
     }
 });
 
-// Merkaba interaction
+// -----------------------------------------
+//  אינטראקציה עם המרכבה (הצגת תמונה/אנימציה)
+// -----------------------------------------
 const merkaba3DContainer = document.getElementById('merkaba3DContainer');
 let isTouchActive = false;
 
@@ -309,10 +357,20 @@ merkaba3DContainer.addEventListener('mouseout', () => {
     const personImage = document.getElementById('personImage');
     if (personImage) personImage.style.opacity = '0';
 });
-merkaba3DContainer.addEventListener('touchstart', () => { isTouchActive = true; const personImage = document.getElementById('personImage'); if (personImage) personImage.style.opacity = '1'; });
-merkaba3DContainer.addEventListener('touchend', () => { isTouchActive = false; const personImage = document.getElementById('personImage'); if (personImage) personImage.style.opacity = '0'; });
+merkaba3DContainer.addEventListener('touchstart', () => {
+    isTouchActive = true; 
+    const personImage = document.getElementById('personImage');
+    if (personImage) personImage.style.opacity = '1';
+});
+merkaba3DContainer.addEventListener('touchend', () => {
+    isTouchActive = false; 
+    const personImage = document.getElementById('personImage');
+    if (personImage) personImage.style.opacity = '0';
+});
 
-// Sephirot interaction (hover for info, click for sound)
+// -----------------------------------------
+//  אינטראקציה עם הספירות
+// -----------------------------------------
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -320,6 +378,7 @@ function onMouseMove(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
+
     const intersects = raycaster.intersectObjects(sephirotMeshes);
     if (intersects.length > 0) {
         const sephira = intersects[0].object.userData;
@@ -327,9 +386,9 @@ function onMouseMove(event) {
         document.getElementById('sephiraName').textContent = sephira.name;
         document.getElementById('sephiraDescription').innerHTML = `
             ${sephira.description}<br>
+            <strong>שם ה':</strong> ${sephira.nameOfGod}<br>
             <strong>מלאך:</strong> ${sephira.angel}<br>
-            <strong>סמלים:</strong> ${sephira.symbols}<br>
-            <strong>קשר לטארוט:</strong> ${sephira.tarot}
+            <strong>סמלים:</strong> ${sephira.symbols}
         `;
     } else {
         document.getElementById('sephiraInfo').style.display = 'none';
@@ -343,6 +402,7 @@ function onTouchMove(event) {
     mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
+
     const intersects = raycaster.intersectObjects(sephirotMeshes);
     if (intersects.length > 0) {
         const sephira = intersects[0].object.userData;
@@ -350,9 +410,9 @@ function onTouchMove(event) {
         document.getElementById('sephiraName').textContent = sephira.name;
         document.getElementById('sephiraDescription').innerHTML = `
             ${sephira.description}<br>
+            <strong>שם ה':</strong> ${sephira.nameOfGod}<br>
             <strong>מלאך:</strong> ${sephira.angel}<br>
-            <strong>סמלים:</strong> ${sephira.symbols}<br>
-            <strong>קשר לטארוט:</strong> ${sephira.tarot}
+            <strong>סמלים:</strong> ${sephira.symbols}
         `;
     } else {
         document.getElementById('sephiraInfo').style.display = 'none';
@@ -361,28 +421,40 @@ function onTouchMove(event) {
 
 function onClickOrTouchStart(event) {
     event.preventDefault();
+    // בכל קליק/טאץ' נוודא שהאודיו אותחל
+    if (!audioInitialized) {
+        initializeAudio();
+    }
+
     const coords = event.type === 'touchstart' ? event.touches[0] : event;
     mouse.x = (coords.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(coords.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
+
     const intersects = raycaster.intersectObjects(sephirotMeshes);
     if (intersects.length > 0) {
         const selectedSephira = intersects[0].object;
         playSound(selectedSephira.userData.frequency);
+
+        // שינוי צבע התאורה לרגע על פי צבע הספירה
         const currentColor = new THREE.Color(ambientLight.color);
-        new TWEEN.Tween(currentColor).to(new THREE.Color(selectedSephira.material.color), 1000)
+        new TWEEN.Tween(currentColor)
+            .to(new THREE.Color(selectedSephira.material.color), 1000)
             .easing(TWEEN.Easing.Quadratic.InOut)
             .onUpdate(() => ambientLight.color.set(currentColor))
             .start();
     }
 }
 
-function onMouseOutOrTouchEnd(event) {
+function onMouseOutOrTouchEnd() {
     document.getElementById('sephiraInfo').style.display = 'none';
     const personImage = document.getElementById('personImage');
-    if (personImage && !isTouchActive) personImage.style.opacity = '0';
+    if (personImage && !isTouchActive) {
+        personImage.style.opacity = '0';
+    }
 }
 
+// אירועים
 window.addEventListener('mousemove', onMouseMove, false);
 window.addEventListener('touchmove', onTouchMove, false);
 window.addEventListener('click', onClickOrTouchStart, false);
@@ -390,7 +462,9 @@ window.addEventListener('touchstart', onClickOrTouchStart, false);
 window.addEventListener('mouseout', onMouseOutOrTouchEnd, false);
 window.addEventListener('touchend', onMouseOutOrTouchEnd, false);
 
-// Footer link interaction
+// -----------------------------------------
+//  אינטראקציה עם קישורי הפוטר
+// -----------------------------------------
 document.querySelectorAll('.footer a').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -406,7 +480,9 @@ document.querySelectorAll('.footer a').forEach(link => {
     });
 });
 
-// Letter combinations
+// -----------------------------------------
+//  יצירת צירופים של אותיות
+// -----------------------------------------
 const combinations = [
     { combination: "אלד", meaning: "ברכה כללית, מעוררת אנרגיה חיובית..." },
     { combination: "סאל", meaning: "רפואה, מחזקת את הגוף והנשמה..." },
@@ -415,28 +491,43 @@ const combinations = [
 
 document.getElementById('generateButton').addEventListener('click', () => {
     const request = document.getElementById('requestInput').value.trim();
-    let selectedCombination = request ? combinations.find(c => c.meaning.toLowerCase().includes(request.toLowerCase())) : null;
+    let selectedCombination = request 
+        ? combinations.find(c => c.meaning.toLowerCase().includes(request.toLowerCase())) 
+        : null;
+    
     if (!selectedCombination) {
-        selectedCombination = combinations[Math.floor(Math.random() * combinations.length)] || { combination: "אלד", meaning: "ברכה כללית, מעוררת אנרגיה חיובית..." };
+        selectedCombination = combinations[Math.floor(Math.random() * combinations.length)] 
+            || { combination: "אלד", meaning: "ברכה כללית, מעוררת אנרגיה חיובית..." };
     }
-    document.getElementById('combinationOutput').innerHTML = `<span class="combination">${selectedCombination.combination}</span> <span class="meaning">${selectedCombination.meaning}</span>`;
+    document.getElementById('combinationOutput').innerHTML = `
+        <span class="combination">${selectedCombination.combination}</span> 
+        <span class="meaning">${selectedCombination.meaning}</span>
+    `;
 });
 
-// Animation
+// -----------------------------------------
+//  לולאת אנימציה
+// -----------------------------------------
 function animate() {
     requestAnimationFrame(animate);
     TWEEN.update();
     controls.update();
     
+    // סיבוב המרכבה
     tetra1.rotation.y += 0.02;
     tetra2.rotation.y -= 0.02;
     tetra1Wireframe.rotation.y += 0.02;
     tetra2Wireframe.rotation.y -= 0.02;
     
+    // הנעת הנקודות על הקווים
     pathDots.forEach(({ dot, startPos, endPos, direction, offset }) => {
         const time = (Date.now() % 4000) / 4000;
         const progress = (time + offset) % 1;
-        dot.position.lerpVectors(direction === 1 ? startPos : endPos, direction === 1 ? endPos : startPos, progress);
+        dot.position.lerpVectors(
+            direction === 1 ? startPos : endPos, 
+            direction === 1 ? endPos : startPos, 
+            progress
+        );
     });
     
     renderer.render(scene, camera);
